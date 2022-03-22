@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ElevenNote.Data;
+using ElevenNote.Services.Note;
 using ElevenNote.Services.Token;
 using ElevenNote.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,10 +36,13 @@ namespace ElevenNote.WebAPI
         {
             // add connection string and Dbcontext setup
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-            
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));            
             
             // Add User Service/Interface for Dependency Injection here services.AddScoped<IUserService, UserService>();
+                services.AddScoped<IUserService, UserService>();
+                services.AddScoped<ITokenService, TokenService>();
+                services.AddScoped<INoteService, NoteService>();
+                services.AddHttpContextAccessor();
             
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -67,9 +71,6 @@ namespace ElevenNote.WebAPI
                         new string[] {}
                     }
                 });
-
-                services.AddScoped<IUserService, UserService>();
-                services.AddScoped<ITokenService, TokenService>();
 
                 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
                 {
