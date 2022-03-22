@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElevenNote.Models.Note;
 using ElevenNote.Services.Note;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +27,33 @@ namespace ElevenNote.WebAPI.Controllers
     {
         var notes = await _noteService.GetAllNotesAsync();
             return Ok(notes);
+    }
+
+    // Get api/Note/5
+    [HttpGet("{noteId:int}")]
+    public async Task<IActionResult> GetNoteById([FromRoute] int noteId)
+    {
+        var detail = await _noteService.GetNoteByIdAsync(noteId);
+
+        // Similar to our service method, we're using a ternary to determine our return type 
+        // If the returned value (detail) is not null, return it with a 200 OK
+        // Otherwise return a 404 not found response
+        return detail is not null
+        ? Ok(detail)
+        : NotFound();
+    }
+
+    //Post api/Note
+    [HttpPost]
+    public async Task<IActionResult> CreateNote([FromBody] NoteCreate request)
+    {
+        if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+        if (await _noteService.CreateNoteAsync(request))
+        return Ok("Note created successfully.");
+
+        return BadRequest("Note could not be created.");
     }
     }
 }
