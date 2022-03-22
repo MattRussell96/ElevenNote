@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ElevenNote.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
