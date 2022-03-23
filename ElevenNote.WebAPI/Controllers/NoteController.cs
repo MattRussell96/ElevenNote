@@ -55,5 +55,17 @@ namespace ElevenNote.WebAPI.Controllers
 
         return BadRequest("Note could not be created.");
     }
+
+    // Put api/Note
+    [HttpPut]
+    public async Task<IActionResult> UpdateNoteById([FromBody] NoteUpdate request)
+    {
+        if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+        return await _noteService.UpdateNoteAsync(request)
+        ? Ok("Note updated successfully.")
+        : BadRequest("Note could not be updated.");
+    }
     }
 }
